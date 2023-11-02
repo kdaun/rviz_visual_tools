@@ -1719,6 +1719,45 @@ bool RvizVisualTools::publishCuboid(const Eigen::Vector3d& point1, const Eigen::
   return publishCuboid(convertPoint(point1), convertPoint(point2), color);
 }
 
+
+  bool RvizVisualTools::publishCuboid(const Eigen::Vector3d& point1, const Eigen::Vector3d& point2, const std_msgs::ColorRGBA& color, const std::string& ns)
+  {
+  // Set the timestamp
+  cuboid_marker_.header.stamp = ros::Time::now();
+  cuboid_marker_.ns = ns;
+  cuboid_marker_.id++;
+  cuboid_marker_.color = color;
+
+  // Calculate center pose
+  geometry_msgs::Pose pose = getIdentityPose();
+  pose.position.x = (point1.x() - point2.x()) / 2.0 + point2.x();
+  pose.position.y = (point1.y() - point2.y()) / 2.0 + point2.y();
+  pose.position.z = (point1.z() - point2.z()) / 2.0 + point2.z();
+  cuboid_marker_.pose = pose;
+
+  // Calculate scale
+  cuboid_marker_.scale.x = fabs(point1.x() - point2.x());
+  cuboid_marker_.scale.y = fabs(point1.y() - point2.y());
+  cuboid_marker_.scale.z = fabs(point1.z() - point2.z());
+
+  // Prevent scale from being zero
+  if (cuboid_marker_.scale.x == 0.0)
+  {
+    cuboid_marker_.scale.x = SMALL_SCALE;
+  }
+  if (cuboid_marker_.scale.y == 0.0)
+  {
+    cuboid_marker_.scale.y = SMALL_SCALE;
+  }
+  if (cuboid_marker_.scale.z == 0.0)
+  {
+    cuboid_marker_.scale.z = SMALL_SCALE;
+  }
+
+  // Helper for publishing rviz markers
+  return publishMarker(cuboid_marker_);
+  }
+
 bool RvizVisualTools::publishCuboid(const geometry_msgs::Point& point1, const geometry_msgs::Point& point2,
                                     colors color, const std::string& ns, std::size_t id)
 {

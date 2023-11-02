@@ -597,6 +597,7 @@ public:
    * \return true on success
    */
   bool publishCuboid(const Eigen::Vector3d& point1, const Eigen::Vector3d& point2, colors color = BLUE);
+  bool publishCuboid(const Eigen::Vector3d& point1, const Eigen::Vector3d& point2, const std_msgs::ColorRGBA& color, const std::string& ns = "Cuboid");
   bool publishCuboid(const geometry_msgs::Point& point1, const geometry_msgs::Point& point2, colors color = BLUE,
                      const std::string& ns = "Cuboid", std::size_t id = 0);
 
